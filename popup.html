@@ -1,17 +1,236 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Multiple URLs</title>
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <div class="container">
-      <h1>Open Multiple URLs</h1>
-      <textarea id="url-input" placeholder="Enter URLs, one per line"></textarea>
-      <button id="open-urls-button">Open URLs</button>
-    </div>
-    <script src="popup.js"></script>
-  </body>
+<html>
+<head>
+  <title>DINOSAUR CHODA</title>
+  <link rel="icon" href="icons/icon48.png" type="image/png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      width: 250px;
+      padding: 10px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      font-size: 1.5em;
+      margin-bottom: 8px;
+      color: #020721;
+    }
+    h4 {
+      margin-top: 0;
+      font-size: 0.8em;
+      color: #777;
+    }
+    textarea, input, button {
+      width: calc(100% - 20px);
+      box-sizing: border-box;
+      margin: 8px 0;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .button-container button {
+      flex: 0 0 calc(50% - 6px);
+      margin: 4px 0;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.1s, box-shadow 0.3s;
+      padding: 8px;
+      font-size: 0.9em;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 4px;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      position: relative;
+    }
+    .button-container button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .button-container button:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+    .button-container button::before {
+      content: "";
+      position: absolute;
+      background: rgba(255, 255, 255, 0.3);
+      width: 100%;
+      height: 100%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      z-index: -1;
+      transition: width 0.3s, height 0.3s;
+    }
+    .button-container button:hover::before {
+      width: 120%;
+      height: 120%;
+    }
+    .button-container button span {
+      position: relative;
+      z-index: 1;
+    }
+    .blue-button {
+      background: linear-gradient(to bottom, #2196F3, #1e88e5);
+    }
+    .red-button {
+      background: linear-gradient(to bottom, #f44336, #e53935);
+    }
+    .orange-button {
+      background: linear-gradient(to bottom, #ff9800, #f57c00);
+    }
+    .purple-button {
+      background: linear-gradient(to bottom, #9c27b0, #8e24aa);
+    }
+    .green-button {
+      background: linear-gradient(to bottom, #4CAF50, #45a049);
+    }
+    .yellow-button {
+      background: linear-gradient(to bottom, #ffeb3b, #fbc02d);
+    }
+    .cyan-button {
+      background: linear-gradient(to bottom, #00bcd4, #0097a7);
+    }
+    .pink-button {
+      background: linear-gradient(to bottom, #e91e63, #d81b60);
+    }
+    progress {
+      width: calc(100% - 20px);
+      margin: 8px 0;
+      display: none;
+    }
+    #emailList {
+      margin: 8px 0;
+      padding: 8px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      height: 120px;
+      overflow-y: auto;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <h1>DINOSAUR CHODA</h1>
+  <textarea id="urlInput" rows="4" placeholder="Enter URLs, one per line"></textarea>
+  
+  <div class="button-container">
+    <button id="openUrlsButton" class="blue-button"><span>Open URLs</span></button>
+    <button id="extractEmailsButton" class="red-button"><span>Show Emails</span></button>
+    <button id="clearEmailsButton" class="orange-button"><span>Clear Emails</span></button>
+    <button id="downloadEmailsButton" class="purple-button"><span>Download Emails</span></button>
+    <button id="searchEmailsButton" class="green-button"><span>Search</span></button>
+    <button id="previewButton" class="yellow-button"><span>Preview</span></button>
+    <button id="submitButton" class="cyan-button"><span>Submit</span></button>
+    <button id="cancelButton" class="pink-button"><span>Cancel</span></button>
+  </div>
+
+  <input type="text" id="searchInput" placeholder="Search Emails">
+  <progress id="progressBar" max="100" value="0"></progress>
+  <div id="emailList"></div>
+  
+  <script src="popup.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const buttons = document.querySelectorAll('.button-container button');
+
+      // Function to add dynamic button effects
+      buttons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+          button.style.background = getComputedStyle(button).background.replace(')', ', 0.8)').replace('rgb', 'rgba');
+        });
+
+        button.addEventListener('mouseleave', function() {
+          button.style.background = getComputedStyle(button).background.replace(')', ', 1)').replace('rgba', 'rgb');
+        });
+
+        button.addEventListener('mousedown', function() {
+          button.style.transform = 'scale(0.95)';
+          button.style.boxShadow = 'none';
+        });
+
+        button.addEventListener('mouseup', function() {
+          button.style.transform = 'scale(1)';
+          button.style.boxShadow = '0px 4px 8px rgba(0, 0, 0, 0.2)';
+        });
+      });
+
+      // Function to simulate opening URLs
+      const openUrlsButton = document.getElementById('openUrlsButton');
+      openUrlsButton.addEventListener('click', function() {
+        let urls = urlInput.value.trim().split('\n').filter(url => url.trim() !== '');
+        if (urls.length === 0) {
+          alert('Please enter at least one URL.');
+          return;
+        }
+        const progressBar = document.getElementById('progressBar');
+        progressBar.style.display = 'block';
+        progressBar.value = 0;
+        let progress = 0;
+        let interval = setInterval(function() {
+          progress += 10;
+          progressBar.value = progress;
+          if (progress >= 100) {
+            clearInterval(interval);
+            progressBar.style.display = 'none';
+            alert('All URLs opened successfully!');
+          }
+        }, 500);
+      });
+
+      // Placeholder functions for other buttons
+      const extractEmailsButton = document.getElementById('extractEmailsButton');
+      extractEmailsButton.addEventListener('click', function() {
+        const emailList = document.getElementById('emailList');
+        emailList.innerHTML = '<p>Extracted emails will appear here.</p>';
+      });
+
+      const clearEmailsButton = document.getElementById('clearEmailsButton');
+      clearEmailsButton.addEventListener('click', function() {
+        const emailList = document.getElementById('emailList');
+        emailList.innerHTML = '';
+      });
+
+      const downloadEmailsButton = document.getElementById('downloadEmailsButton');
+      downloadEmailsButton.addEventListener('click', function() {
+        alert('Downloading emails...');
+      });
+
+      const searchEmailsButton = document.getElementById('searchEmailsButton');
+      searchEmailsButton.addEventListener('click', function() {
+        const searchTerm = document.getElementById('searchInput').value.trim();
+        alert('Searching emails for: ' + searchTerm);
+      });
+
+      const previewButton = document.getElementById('previewButton');
+      previewButton.addEventListener('click', function() {
+        alert('Previewing...');
+      });
+
+      const submitButton = document.getElementById('submitButton');
+      submitButton.addEventListener('click', function() {
+        alert('Submitting...');
+      });
+
+      const cancelButton = document.getElementById('cancelButton');
+      cancelButton.addEventListener('click', function() {
+        alert('Canceling...');
+      });
+    });
+  </script>
+  <footer>
+    <p><h6>Open Multiple URLs & Email Extractor by DEBA</h6></p>
+  </footer>
+</body>
 </html>
